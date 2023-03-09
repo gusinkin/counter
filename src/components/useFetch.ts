@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import { URL, CLIENT, AUTH } from '../constants';
 
-type Json =
+type CustomResponse =
   | {
       ok: true;
       count: number;
@@ -11,7 +12,14 @@ type Json =
       error_ui: string;
     };
 
-export function useFetch() {
+interface UseFetch {
+  data: number;
+  error: string;
+  loading: boolean;
+  updateCount: (count: number) => Promise<void>;
+}
+
+export function useFetch(): UseFetch {
   const [data, setData] = useState<number>(0);
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -19,21 +27,18 @@ export function useFetch() {
   async function updateCount(count: number): Promise<void> {
     try {
       setLoading(true);
-      const response: Response = await fetch(
-        `https://lk.zont-online.ru/api/button_count`,
-        {
-          method: 'Post',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-ZONT-Client': 'd.gusinkin@gmail.com',
-            Authorization: 'Basic ZC5ndXNpbmtpbjp0OHV6cWhSOQ==',
-          },
-          body: JSON.stringify({
-            count: count,
-          }),
-        }
-      );
-      const json: Json = await response.json();
+      const response: Response = await fetch(URL, {
+        method: 'Post',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-ZONT-Client': CLIENT,
+          Authorization: AUTH,
+        },
+        body: JSON.stringify({
+          count: count,
+        }),
+      });
+      const json: CustomResponse = await response.json();
       if (json.ok === true) {
         const result = json.count;
         setData(result);

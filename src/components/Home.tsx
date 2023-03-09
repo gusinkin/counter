@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useFetch } from './useFetch';
-import { Button } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { yellow } from '@mui/material/colors';
 import { Alert } from '@mui/material';
+import { Output } from './Output';
 
-export const Home = () => {
+export const Home: FC = () => {
   const [count, setCount] = useState<number>(0);
   const { data, error, loading, updateCount } = useFetch();
 
@@ -35,13 +34,7 @@ export const Home = () => {
           КЛИКНУТЬ
         </LoadingButton>
         <Alert severity='info'>Кликнули {count} раз</Alert>
-        <div className=''>
-          {error ? (
-            <Alert severity='error'>Произошла ошибка: {error}</Alert>
-          ) : (
-            <Alert severity='success'>По версии сервера: {data} раз</Alert>
-          )}
-        </div>
+        <Output data={data} error={error} />
       </div>
     </div>
   );
